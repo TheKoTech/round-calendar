@@ -1,0 +1,48 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@100;200&display=swap");
+body {
+  overflow: hidden; /* Hide scrollbars */
+  background: rgb(49, 49, 49);
+  font-family: "Roboto Mono", monospace;
+  color: rgb(233, 234, 240);
+}
+
+.ring_timer {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translate(5%, -50%);
+  width: 800px;
+  height: 800px;
+  font-size: 28px;
+}
+
+.ring_timer::before {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  border: rgba(255, 255, 255, 0.1) 60px solid;
+  border-radius: 50%;
+  content: " ";
+}
+
+.ring_span {
+  position: absolute;
+  display: block;
+  top: 50%;
+  width: 100%;
+  text-align: right;
+}
+
+.ring_text {
+  position: relative;
+  width: 100%;
+  padding: 0 10px;
+}
+
+button {
+  position: absolute;
+  top: 50%;
+  right: -100px;
+}/*# sourceMappingURL=style.css.map */
