@@ -11,8 +11,8 @@ body {
   left: 0;
   top: 50%;
   transform: translate(-55%, -50%);
-  width: 1700px;
-  height: 1700px;
+  width: 700px;
+  height: 700px;
   font-size: 28px;
 }
 
@@ -25,6 +25,14 @@ body {
   border: rgba(255, 255, 255, 0.1) 60px solid;
   border-radius: 50%;
   content: " ";
+}
+
+.ring_seconds {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
 }
 
 .ring_span {

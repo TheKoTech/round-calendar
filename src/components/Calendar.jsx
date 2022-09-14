@@ -10,9 +10,13 @@ function pad(num, size) {
 export default class Calendar extends Component {
 	constructor(props) {
 		super(props)
-		this.sec = 0
+		this.date = new Date()
 		this.state = {
-			secRotation: this.sec,
+			secStyle: {
+				transition: 'transform 0.35s ease',
+				transform: 'rotate(' + String(this.date.getSeconds() * (- 6)) + 'deg)'
+			},
+			secRotation: this.date,
 			spanList: []
 		}
 	}
@@ -27,9 +31,39 @@ export default class Calendar extends Component {
 			spanProps.push(sp);
 		}
 		this.timerID = setInterval(() => {
-			this.sec = (this.sec + 1) % 60
-			this.setState({secRotation: this.sec * (-6)})
-		}, 1000);
+			this.date = new Date();
+
+			if (this.date.getSeconds() === 0) {
+				console.log('this.date.getSecods() === 0');
+				this.setState({
+					secStyle: {
+						transition: 'transform 0.4s ease',
+						transform: 'rotate(-360deg)'
+					}
+				},
+					() => setTimeout(() =>
+						{
+							this.setState({
+								secStyle: {
+									transition: 'none',
+									transform: 'rotate(0deg)'
+								}
+							})
+						}, 500)
+					)
+			
+			} else {
+
+				console.log('else: ' + String(this.date.getSeconds()))
+				this.setState({ 
+					secStyle: {
+						transition: 'transform 0.4s ease',
+						transform: 'rotate(' + String(this.date.getSeconds() * (- 6)) + 'deg)'
+					}
+				 })
+			}
+
+		}, 980);
 		this.setState({
 			spanList: spanProps.map((prop) =>
 				<RingSpan key={prop.text} text={pad(prop.text, 2)} rotation={prop.rotation} />
@@ -38,20 +72,15 @@ export default class Calendar extends Component {
 	}
 
 	componentWillUnmount() {
-    clearInterval(this.timerID);
-  }
+		clearInterval(this.timerID);
+	}
 
 	render() {
 		return (
 			<div className="ring_timer">
-				<div className='ring_seconds' style={{
-					transform: 'rotate(' + this.state.secRotation + 'deg)',
-					height: '100%',
-					transition: 'transform 0.5s ease'
-				}}>
+				<div className='ring_seconds' style={this.state.secStyle}>
 					{this.state.spanList}
 				</div>
-				<button onClick={() => { this.setState({rotation: this.sec}) }}>test</button>
 			</div>
 		)
 	}

@@ -1,4 +1,4 @@
-$ring_diameter: 1700px;
+$ring_diameter: 700px;
 $ring_color: rgba(255, 255, 255, 0.1);
 $bg_color: rgb(49, 49, 49);
 $text_color: rgb(233, 234, 240);
@@ -34,7 +34,11 @@ body {
 }
 
 .ring_seconds {
-
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
 }
 
 .ring_span {
