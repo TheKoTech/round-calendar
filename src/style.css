@@ -10,9 +10,9 @@ body {
   position: absolute;
   left: 0;
   top: 50%;
-  transform: translate(-55%, -50%);
-  width: 1700px;
-  height: 1700px;
+  transform: translate(5%, -50%);
+  width: 2700px;
+  height: 2700px;
   font-size: 28px;
 }
 

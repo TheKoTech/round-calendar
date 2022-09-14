@@ -1,19 +1,10 @@
-$ring_diameter: 800px;
+$ring_diameter: 1700px;
 $ring_color: rgba(255, 255, 255, 0.1);
 $bg_color: rgb(49, 49, 49);
 $text_color: rgb(233, 234, 240);
 
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@100;200&display=swap');
-// position: absolute;
-// top: 5px;
-// right: 5px;
-// bottom: 5px
-// px
-// ;
-// left: 5px;
-// border-radius: 50%;
-// border: solid 35px #FFFFFF;
-// content: " ";
+
 body {
     overflow: hidden; /* Hide scrollbars */
     background: $bg_color;
@@ -25,7 +16,7 @@ body {
     position: absolute;
     left: 0;
     top: 50%;
-    transform: translate(5%, -50%);
+    transform: translate(-55%, -50%);
     width: $ring_diameter;
     height: $ring_diameter;
     font-size: 28px;
@@ -40,6 +31,10 @@ body {
     border: $ring_color 60px solid;
     border-radius: 50%;
     content: " ";
+}
+
+.ring_seconds {
+
 }
 
 .ring_span {

@@ -1,3 +1,4 @@
+import { toHaveAccessibleDescription } from '@testing-library/jest-dom/dist/matchers'
 import React, { Component } from 'react'
 import RingSpan from './RingSpan'
 
@@ -8,12 +9,14 @@ function pad(num, size) {
 
 export default class Calendar extends Component {
 	constructor(props) {
-		super(props);
+		super(props)
+		this.sec = 0
 		this.state = {
+			secRotation: this.sec,
 			spanList: []
 		}
 	}
-	
+
 	componentDidMount() {
 		const spanProps = [];
 		for (let i = 0; i <= 59; i++) {
@@ -23,25 +26,32 @@ export default class Calendar extends Component {
 			}
 			spanProps.push(sp);
 		}
+		this.timerID = setInterval(() => {
+			this.sec = (this.sec + 1) % 60
+			this.setState({secRotation: this.sec * (-6)})
+		}, 1000);
 		this.setState({
 			spanList: spanProps.map((prop) =>
 				<RingSpan key={prop.text} text={pad(prop.text, 2)} rotation={prop.rotation} />
 			)
 		})
-		// this.setState({
-		// })
 	}
-	
+
+	componentWillUnmount() {
+    clearInterval(this.timerID);
+  }
+
 	render() {
 		return (
-			<div class="ring_timer">
-				{this.state.spanList}
-				<button onClick={() => {
-					this.state.spanProps.forEach(prop => {
-						prop.rotation += 2
-					});
-					console.log(this.state.spanProps)
-				}}>test</button>
+			<div className="ring_timer">
+				<div className='ring_seconds' style={{
+					transform: 'rotate(' + this.state.secRotation + 'deg)',
+					height: '100%',
+					transition: 'transform 0.5s ease'
+				}}>
+					{this.state.spanList}
+				</div>
+				<button onClick={() => { this.setState({rotation: this.sec}) }}>test</button>
 			</div>
 		)
 	}
