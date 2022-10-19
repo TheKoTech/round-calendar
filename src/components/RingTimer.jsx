@@ -28,7 +28,6 @@ const RingTimer = function (props) {
 	return (
 		<div className="ring_timer">
 			{spanList}
-			<button onClick={() =>{}}>test</button>
 		</div>
 	)
 }

@@ -7,18 +7,36 @@ function pad(num, size) {
 	return '0'.repeat(size - numStr.length) + numStr
 }
 
+
 export default class Calendar extends Component {
+
 	constructor(props) {
 		super(props)
 		this.date = new Date()
+		this.syncedIntervals = new Map()
+		this.degub_time = new Date()
 		this.state = {
 			secStyle: {
 				transition: 'transform 0.35s ease',
-				transform: 'rotate(' + String(this.date.getSeconds() * (- 6)) + 'deg)'
+				transform: 'rotate(0deg)'
+				// transform: 'rotate(' + String(this.startDate.getSeconds() * (- 6)) + 'deg)'
 			},
-			secRotation: this.date,
+			// secRotation: this.date,
 			spanList: []
 		}
+	}
+
+	/** вызывает callback каждую секунду. Хранит ID в this.timeoutID */
+	tick(callback) {
+		const newDate = new Date()
+		const delay = 1000 - newDate.getMilliseconds()
+		this.timeoutID = setTimeout(
+			() => {
+				callback()
+				this.tick(callback)
+			},
+			delay
+		)
 	}
 
 	componentDidMount() {
@@ -30,40 +48,49 @@ export default class Calendar extends Component {
 			}
 			spanProps.push(sp);
 		}
+		this.tick(() => {
+			const now = this.date
+			const past = this.date.degub_time
+			// console.log(this.date.getSeconds())
+			if (now - past > 1500) {
+				console.warn(`!!! now: ${now}    past: ${past}`)
+			}
+			this.date.degub_time = new Date()
+		})
+
 		this.timerID = setInterval(() => {
 			this.date = new Date();
 
-			if (this.date.getSeconds() === 0) {
-				console.log('this.date.getSecods() === 0');
+			if (this.date.getSeconds() === 0 && this.state.secStyle.transform !== 'rotate(0deg)') {
+
 				this.setState({
 					secStyle: {
-						transition: 'transform 0.4s ease',
+						transition: 'transform 0.35s ease',
 						transform: 'rotate(-360deg)'
 					}
 				},
-					() => setTimeout(() =>
-						{
-							this.setState({
-								secStyle: {
-									transition: 'none',
-									transform: 'rotate(0deg)'
-								}
-							})
-						}, 500)
-					)
-			
+					() => setTimeout(() => {
+						this.setState({
+							secStyle: {
+								transition: 'none',
+								transform: 'rotate(0deg)'
+							}
+						})
+					}, 500)
+				)
+
 			} else {
 
-				console.log('else: ' + String(this.date.getSeconds()))
-				this.setState({ 
+				this.setState({
 					secStyle: {
-						transition: 'transform 0.4s ease',
+						transition: 'transform 0.35s ease',
 						transform: 'rotate(' + String(this.date.getSeconds() * (- 6)) + 'deg)'
 					}
-				 })
+				})
+
 			}
 
-		}, 980);
+		}, 40);
 		this.setState({
 			spanList: spanProps.map((prop) =>
 				<RingSpan key={prop.text} text={pad(prop.text, 2)} rotation={prop.rotation} />
@@ -72,7 +99,9 @@ export default class Calendar extends Component {
 	}
 
 	componentWillUnmount() {
-		clearInterval(this.timerID);
+		clearInterval(this.timerID)
+		clearTimeout(this.timeoutID)
+		console.log('timeout cleared');
 	}
 
 	render() {
