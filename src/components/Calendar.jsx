@@ -7,6 +7,17 @@ function pad(num, size) {
 	return '0'.repeat(size - numStr.length) + numStr
 }
 
+const intervals = new Map(); // +
+
+function setInterval(fn, time, context, ...args) {
+	const id = Math.floor(Math.random() * 10000); // +
+	intervals.set(id, setTimeout(function next() {
+		 intervals.set(id, setTimeout(next, time));
+		 fn.apply(context, args);
+	}, time));
+	return id;
+}
+
 
 export default class Calendar extends Component {
 
@@ -30,6 +41,7 @@ export default class Calendar extends Component {
 	tick(callback) {
 		const newDate = new Date()
 		const delay = 1000 - newDate.getMilliseconds()
+		const id = Math.floor(Math.random() * 10000); // +
 		this.timeoutID = setTimeout(
 			() => {
 				callback()
@@ -37,6 +49,7 @@ export default class Calendar extends Component {
 			},
 			delay
 		)
+		return id
 	}
 
 	componentDidMount() {
