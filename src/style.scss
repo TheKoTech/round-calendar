@@ -1,4 +1,7 @@
 $ring_diameter: 1000px;
+$sec_diameter: $ring_diameter;
+$min_diameter: $ring_diameter - 60;
+$hour_diameter: $ring_diameter - 120;
 $ring_color: rgba(255, 255, 255, 0.1);
 $bg_color: rgb(49, 49, 49);
 $text_color: rgb(233, 234, 240);
@@ -6,57 +9,76 @@ $text_color: rgb(233, 234, 240);
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@100;200&display=swap');
 
 body {
-    overflow: hidden; /* Hide scrollbars */
-    background: $bg_color;
-    font-family: 'Roboto Mono', monospace;
-    color: $text_color;
+	overflow: hidden;
+	/* Hide scrollbars */
+	background: $bg_color;
+	font-family: 'Roboto Mono', monospace;
+	color: $text_color;
 }
 
 .ring_timer {
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translate(-55%, -50%);
-    width: $ring_diameter;
-    height: $ring_diameter;
-    font-size: 28px;
+	position: absolute;
+	left: 0;
+	top: 50%;
+	transform: translate(-55%, -50%);
+	width: $ring_diameter;
+	height: $ring_diameter;
+	font-size: 28px;
 }
 
 .ring_timer::before {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    border: $ring_color 60px solid;
-    border-radius: 50%;
-    content: " ";
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	border: $ring_color 60px solid;
+	border-radius: 50%;
+	content: "";
 }
 
-.ring_seconds {
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
+.ring_seconds,
+.ring_minutes,
+.ring_hours,
+.dial {
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+}
+
+.dial_sec {
+	top: $ring_diameter - $sec_diameter;
+	left: $ring_diameter - $sec_diameter;
+	bottom: $ring_diameter - $sec_diameter;
+	right: $ring_diameter - $sec_diameter;
+}
+
+.dial_min {
+	top: $ring_diameter - $min_diameter;
+	left: $ring_diameter - $min_diameter;
+	bottom: $ring_diameter - $min_diameter;
+	right: $ring_diameter - $min_diameter;
+}
+
+.dial_hour {
+	top: $ring_diameter - $hour_diameter;
+	left: $ring_diameter - $hour_diameter;
+	bottom: $ring_diameter - $hour_diameter;
+	right: $ring_diameter - $hour_diameter;
 }
 
 .ring_span {
-    position: absolute;
-    display: block;
-    top: 50%;
-    width: 100%;
-    text-align: right;
+	position: absolute;
+	display: block;
+	top: 50%;
+	width: 100%;
+	text-align: right;
 }
 
 .ring_text {
-    position: relative;
-    width: 100%;
-    padding: 0 10px;
-}
-
-button {
-    position: absolute;
-    top: 50%;
-    right: -100px;
+	position: relative;
+	width: 100%;
+	padding: 0 10px;
 }

@@ -1,4 +1,3 @@
-import { toHaveAccessibleDescription } from '@testing-library/jest-dom/dist/matchers'
 import React, { Component } from 'react'
 import RingSpan from './RingSpan'
 
@@ -7,24 +6,12 @@ function pad(num, size) {
 	return '0'.repeat(size - numStr.length) + numStr
 }
 
-const intervals = new Map(); // +
-
-function setInterval(fn, time, context, ...args) {
-	const id = Math.floor(Math.random() * 10000); // +
-	intervals.set(id, setTimeout(function next() {
-		 intervals.set(id, setTimeout(next, time));
-		 fn.apply(context, args);
-	}, time));
-	return id;
-}
-
 
 export default class Calendar extends Component {
 
 	constructor(props) {
 		super(props)
 		this.date = new Date()
-		this.syncedIntervals = new Map()
 		this.degub_time = new Date()
 		this.state = {
 			secStyle: {
@@ -32,16 +19,22 @@ export default class Calendar extends Component {
 				transform: 'rotate(0deg)'
 				// transform: 'rotate(' + String(this.startDate.getSeconds() * (- 6)) + 'deg)'
 			},
+			minStyle: {
+				transition: 'transform 0.35s ease',
+				transform: 'rotate(0deg)'
+			},
 			// secRotation: this.date,
-			spanList: []
+			secondsSpanList: [],
+			// minutesSpanList: [],
+			// hoursSpanList: []
 		}
 	}
 
-	/** вызывает callback каждую секунду. Хранит ID в this.timeoutID */
+	/** вызывает callback каждый раз, когда происходит новая секунда. 
+	 * Хранит ID в this.timeoutID */
 	tick(callback) {
 		const newDate = new Date()
 		const delay = 1000 - newDate.getMilliseconds()
-		const id = Math.floor(Math.random() * 10000); // +
 		this.timeoutID = setTimeout(
 			() => {
 				callback()
@@ -49,79 +42,125 @@ export default class Calendar extends Component {
 			},
 			delay
 		)
-		return id
+	}
+
+
+	// todo: change timeMethod to time
+	/** Sets the state to time * (- angleMultiplyer). 
+	 * @param state {string}
+	 * @param time {number}
+	 * @param angleMultiplyer {number}
+	*/
+	rotate(state, time, angleMultiplyer) {
+
+		if (time === 0 && this.state[state].transform !== 'rotate(0deg)') {
+
+			this.setState({
+				[state]: {
+					transition: 'transform 0.35s ease',
+					transform: 'rotate(-360deg)'
+				}
+			},
+				() => setTimeout(() => {
+					this.setState({
+						[state]: {
+							transition: 'none',
+							transform: 'rotate(0deg)'
+						}
+					})
+				}, 500)
+			)
+
+		} else {
+
+			this.setState({
+				[state]: {
+					transition: 'transform 0.35s ease',
+					transform: 'rotate(' + String(time * (- angleMultiplyer)) + 'deg)'
+				}
+			})
+		}
+
 	}
 
 	componentDidMount() {
-		const spanProps = [];
-		for (let i = 0; i <= 59; i++) {
-			const sp = {
-				text: i,
-				rotation: (i) * 6
+
+		const spanProps = []
+		const hourProps = []
+
+		for (let i = 0; i < 60; i++) {
+			const prop = {
+				value: i,
+				rotation: i * 6
 			}
-			spanProps.push(sp);
+			spanProps.push(prop)
 		}
-		this.tick(() => {
-			const now = this.date
-			const past = this.date.degub_time
-			// console.log(this.date.getSeconds())
-			if (now - past > 1500) {
-				console.warn(`!!! now: ${now}    past: ${past}`)
+
+		for (let i = 0; i < 24; i++) {
+			const prop = {
+				value: i,
+				rotation: i * 15
 			}
-			this.date.degub_time = new Date()
-		})
+			hourProps.push(prop)
+		}
 
-		this.timerID = setInterval(() => {
-			this.date = new Date();
-
-			if (this.date.getSeconds() === 0 && this.state.secStyle.transform !== 'rotate(0deg)') {
-
-				this.setState({
-					secStyle: {
-						transition: 'transform 0.35s ease',
-						transform: 'rotate(-360deg)'
-					}
-				},
-					() => setTimeout(() => {
-						this.setState({
-							secStyle: {
-								transition: 'none',
-								transform: 'rotate(0deg)'
-							}
-						})
-					}, 500)
-				)
-
-			} else {
-
-				this.setState({
-					secStyle: {
-						transition: 'transform 0.35s ease',
-						transform: 'rotate(' + String(this.date.getSeconds() * (- 6)) + 'deg)'
-					}
-				})
-
-			}
-
-		}, 40);
 		this.setState({
-			spanList: spanProps.map((prop) =>
-				<RingSpan key={prop.text} text={pad(prop.text, 2)} rotation={prop.rotation} />
+			secondsSpanList: spanProps.map((prop) =>
+				<RingSpan key={prop.value} text={pad(prop.value, 2)} rotation={prop.rotation} />
+			),
+			minutesSpanList: spanProps.map((prop) =>
+				<RingSpan key={prop.value} text={pad(prop.value, 2)} rotation={prop.rotation} />
+			),
+			hoursSpanList: hourProps.map((prop) =>
+				<RingSpan key={prop.value} text={pad(prop.value, 2)} rotation={prop.rotation} />
 			)
 		})
+
+		this.tick(() => {
+
+			this.date = new Date();
+
+			this.rotate('secStyle', this.date.getSeconds(), 6)
+			this.rotate('minStyle', this.date.getMinutes(), 6)
+			this.rotate('hourStyle', this.date.getHours(), 15)
+
+			console.log(new Date().getTime())
+
+		})
+
 	}
 
 	componentWillUnmount() {
-		clearInterval(this.timerID)
 		clearTimeout(this.timeoutID)
-		console.log('timeout cleared');
+		console.log('timeout cleared')
 	}
 
 	render() {
 		return (
 			<div className="ring_timer">
-				<div className='ring_seconds' style={this.state.secStyle}>
-					{this.state.spanList}
+				<div className='dial dial_sec'>
+					<div
+						className='ring_seconds'
+						style={this.state.secStyle}
+					>
+						{this.state.secondsSpanList}
+					</div>
+				</div>
+				<div className="dial dial_min">
+					<div
+						className="ring_minutes"
+						style={this.state.minStyle}
+					>
+						{this.state.minutesSpanList}
+					</div>
+				</div>
+				<div className="dial dial_hour">
+					<div
+						className="ring_hours"
+						style={this.state.hourStyle}
+					>
+						{this.state.hoursSpanList}
+					</div>
 				</div>
 			</div>
 		)

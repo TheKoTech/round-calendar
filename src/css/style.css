@@ -1,6 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@100;200&display=swap");
 body {
-  overflow: hidden; /* Hide scrollbars */
+  overflow: hidden;
+  /* Hide scrollbars */
   background: rgb(49, 49, 49);
   font-family: "Roboto Mono", monospace;
   color: rgb(233, 234, 240);
@@ -24,15 +25,39 @@ body {
   right: 0;
   border: rgba(255, 255, 255, 0.1) 60px solid;
   border-radius: 50%;
-  content: " ";
+  content: "";
 }
 
-.ring_seconds {
+.ring_seconds,
+.ring_minutes,
+.ring_hours,
+.dial {
   position: absolute;
   top: 0;
   left: 0;
   bottom: 0;
   right: 0;
+}
+
+.dial_sec {
+  top: 0px;
+  left: 0px;
+  bottom: 0px;
+  right: 0px;
+}
+
+.dial_min {
+  top: 60px;
+  left: 60px;
+  bottom: 60px;
+  right: 60px;
+}
+
+.dial_hour {
+  top: 120px;
+  left: 120px;
+  bottom: 120px;
+  right: 120px;
 }
 
 .ring_span {
@@ -47,10 +72,4 @@ body {
   position: relative;
   width: 100%;
   padding: 0 10px;
-}
-
-button {
-  position: absolute;
-  top: 50%;
-  right: -100px;
 }/*# sourceMappingURL=style.css.map */
