@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import RingSpan from './RingSpan'
 
+
 function pad(num, size) {
 	const numStr = num.toString()
 	return '0'.repeat(size - numStr.length) + numStr
@@ -13,14 +14,15 @@ export default class Calendar extends Component {
 		super(props)
 		this.date = new Date()
 		this.degub_time = new Date()
+		this.transition = 'transform 0.3s ease'
 		this.state = {
 			secStyle: {
-				transition: 'transform 0.35s ease',
+				transition: this.transition,
 				transform: 'rotate(0deg)'
 				// transform: 'rotate(' + String(this.startDate.getSeconds() * (- 6)) + 'deg)'
 			},
 			minStyle: {
-				transition: 'transform 0.35s ease',
+				transition: this.transition,
 				transform: 'rotate(0deg)'
 			},
 			// secRotation: this.date,
@@ -49,16 +51,16 @@ export default class Calendar extends Component {
 	/** Sets the state to time * (- angleMultiplyer). 
 	 * @param state {string}
 	 * @param time {number}
-	 * @param angleMultiplyer {number}
+	 * @param transitionAngle {number | string}
 	*/
-	rotate(state, time, angleMultiplyer) {
+	rotate(state, time, transitionAngle) {
 
 		if (time === 0 && this.state[state].transform !== 'rotate(0deg)') {
 
 			this.setState({
 				[state]: {
-					transition: 'transform 0.35s ease',
-					transform: 'rotate(-360deg)'
+					transition: this.transition,
+					transform: 'rotate(-' + transitionAngle + 'deg)'
 				}
 			},
 				() => setTimeout(() => {
@@ -68,15 +70,15 @@ export default class Calendar extends Component {
 							transform: 'rotate(0deg)'
 						}
 					})
-				}, 500)
+				}, 900)
 			)
 
 		} else {
 
 			this.setState({
 				[state]: {
-					transition: 'transform 0.35s ease',
-					transform: 'rotate(' + String(time * (- angleMultiplyer)) + 'deg)'
+					transition: this.transition,
+					transform: 'rotate(' + String(time * (- 3)) + 'deg)'
 				}
 			})
 		}
@@ -88,43 +90,42 @@ export default class Calendar extends Component {
 		const spanProps = []
 		const hourProps = []
 
-		for (let i = 0; i < 60; i++) {
+		for (let i = 0; i < 120; i++) {
 			const prop = {
-				value: i,
-				rotation: i * 6
+				value: (i % 60),
+				rotation: i* 3
 			}
 			spanProps.push(prop)
 		}
 
-		for (let i = 0; i < 24; i++) {
+		for (let i = 0; i < 120; i++) {
 			const prop = {
-				value: i,
-				rotation: i * 15
+				value: (i % 24),
+				rotation: i * 3
 			}
 			hourProps.push(prop)
 		}
 
 		this.setState({
 			secondsSpanList: spanProps.map((prop) =>
-				<RingSpan key={prop.value} text={pad(prop.value, 2)} rotation={prop.rotation} />
+				<RingSpan key={prop.rotation} text={pad(prop.value, 2)} rotation={prop.rotation} />
 			),
 			minutesSpanList: spanProps.map((prop) =>
-				<RingSpan key={prop.value} text={pad(prop.value, 2)} rotation={prop.rotation} />
+				<RingSpan key={prop.rotation} text={pad(prop.value, 2)} rotation={prop.rotation} />
 			),
 			hoursSpanList: hourProps.map((prop) =>
-				<RingSpan key={prop.value} text={pad(prop.value, 2)} rotation={prop.rotation} />
+				<RingSpan key={prop.rotation} text={pad(prop.value, 2)} rotation={prop.rotation} />
 			)
 		})
 
 		this.tick(() => {
 
 			this.date = new Date();
+			// this.date = new Date(this.date.getTime() + 672 * 60000 - 20 * 1000)
 
-			this.rotate('secStyle', this.date.getSeconds(), 6)
-			this.rotate('minStyle', this.date.getMinutes(), 6)
-			this.rotate('hourStyle', this.date.getHours(), 15)
-
-			console.log(new Date().getTime())
+			this.rotate('secStyle', this.date.getSeconds(), 180)
+			this.rotate('minStyle', this.date.getMinutes(), 180)
+			this.rotate('hourStyle', this.date.getHours(), 72)
 
 		})
 
@@ -132,7 +133,7 @@ export default class Calendar extends Component {
 
 	componentWillUnmount() {
 		clearTimeout(this.timeoutID)
-		console.log('timeout cleared')
+		// console.log('timeout cleared')
 	}
 
 	render() {

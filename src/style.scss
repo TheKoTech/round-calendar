@@ -1,7 +1,7 @@
-$ring_diameter: 1000px;
+$ring_diameter: 1400px;
 $sec_diameter: $ring_diameter;
-$min_diameter: $ring_diameter - 60;
-$hour_diameter: $ring_diameter - 120;
+$min_diameter: $ring_diameter - 90;
+$hour_diameter: $ring_diameter - 180;
 $ring_color: rgba(255, 255, 255, 0.1);
 $bg_color: rgb(49, 49, 49);
 $text_color: rgb(233, 234, 240);
@@ -20,7 +20,7 @@ body {
 	position: absolute;
 	left: 0;
 	top: 50%;
-	transform: translate(-55%, -50%);
+	transform: translate(-45%, -50%);
 	width: $ring_diameter;
 	height: $ring_diameter;
 	font-size: 28px;
