@@ -1,4 +1,4 @@
-$ring_diameter: 1400px;
+$ring_diameter: 2000px;
 $sec_diameter: $ring_diameter;
 $min_diameter: $ring_diameter - 90;
 $hour_diameter: $ring_diameter - 180;
@@ -37,9 +37,7 @@ body {
 	content: "";
 }
 
-.ring_seconds,
-.ring_minutes,
-.ring_hours,
+:has(.dial_sec, .dial_min, .dial_hour) .rotator
 .dial {
 	position: absolute;
 	top: 0;
@@ -53,6 +51,8 @@ body {
 	left: $ring_diameter - $sec_diameter;
 	bottom: $ring_diameter - $sec_diameter;
 	right: $ring_diameter - $sec_diameter;
+	-webkit-transform: translateZ(0);
+	transform: translateZ(0);
 }
 
 .dial_min {
@@ -60,6 +60,8 @@ body {
 	left: $ring_diameter - $min_diameter;
 	bottom: $ring_diameter - $min_diameter;
 	right: $ring_diameter - $min_diameter;
+	-webkit-transform: translateZ(0);
+	transform: translateZ(0);
 }
 
 .dial_hour {
@@ -67,6 +69,8 @@ body {
 	left: $ring_diameter - $hour_diameter;
 	bottom: $ring_diameter - $hour_diameter;
 	right: $ring_diameter - $hour_diameter;
+	-webkit-transform: translateZ(0);
+	transform: translateZ(0);
 }
 
 .ring_span {
@@ -81,4 +85,16 @@ body {
 	position: relative;
 	width: 100%;
 	padding: 0 10px;
+}
+
+.dial_sec .activated {
+	color: rgb(255, 116, 52);
+}
+
+.dial_min .activated {
+	color: rgb(81, 221, 0);
+}
+
+.dial_hour .activated {
+	color: rgb(52, 147, 255);
 }

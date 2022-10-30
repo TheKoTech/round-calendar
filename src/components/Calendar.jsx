@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
+import Dial from './Dial'
 import RingSpan from './RingSpan'
+import memoize from 'memoize-one'
 
 
 function pad(num, size) {
@@ -14,22 +16,51 @@ export default class Calendar extends Component {
 		super(props)
 		this.date = new Date()
 		this.degub_time = new Date()
-		this.transition = 'transform 0.3s ease'
+		this.transition = 'transform 0.25s ease'
 		this.state = {
 			secStyle: {
 				transition: this.transition,
 				transform: 'rotate(0deg)'
-				// transform: 'rotate(' + String(this.startDate.getSeconds() * (- 6)) + 'deg)'
 			},
 			minStyle: {
 				transition: this.transition,
 				transform: 'rotate(0deg)'
 			},
-			// secRotation: this.date,
-			secondsSpanList: [],
-			// minutesSpanList: [],
-			// hoursSpanList: []
+			hourStyle: {
+				transition: this.transition,
+				transform: 'rotate(0deg)'
+			},
+			secSpanList: [],
+			minSpanList: [],
+			hourSpanList: [],
+			secActivated: new Array(120).fill(false),
+			minActivated: new Array(120).fill(false),
+			hourActivated: new Array(120).fill(false)
 		}
+
+		this.secProps = []
+		this.minProps = []
+		this.hourProps = []
+
+		for (let i = 0; i < 120; i++) {
+			const prop = {
+				value: (i % 60),
+				rotation: i * 3,
+				activated: false
+			}
+			this.secProps.push(prop)
+			this.minProps.push(prop)
+		}
+
+		for (let i = 0; i < 120; i++) {
+			const prop = {
+				value: (i % 24),
+				rotation: i * 3,
+				activated: false
+			}
+			this.hourProps.push(prop)
+		}
+
 	}
 
 	/** вызывает callback каждый раз, когда происходит новая секунда. 
@@ -46,40 +77,52 @@ export default class Calendar extends Component {
 		)
 	}
 
-
-	// todo: change timeMethod to time
-	/** Sets the state to time * (- angleMultiplyer). 
-	 * @param state {string}
+	// todo: optimize by assigning all states at once, when changing more than one
+	/** Sets the state[Unit] to time * (- angleMultiplyer). 
+	 * @param unit {string}
 	 * @param time {number}
 	 * @param transitionAngle {number | string}
 	*/
-	rotate(state, time, transitionAngle) {
+	rotate(unit, time, transitionAngle) {
 
-		if (time === 0 && this.state[state].transform !== 'rotate(0deg)') {
+		const activated = new Array(120).fill(false)
+
+		if (time === 0 && this.state[`${unit}Style`].transform !== 'rotate(0deg)') {
+
+			activated[transitionAngle / 3] = true
+			activated[0] = true
 
 			this.setState({
-				[state]: {
+				[`${unit}Style`]: {
 					transition: this.transition,
 					transform: 'rotate(-' + transitionAngle + 'deg)'
-				}
+				},
+				[`${unit}Activated`]: activated
+
 			},
 				() => setTimeout(() => {
+					console.log('clearing transition')
 					this.setState({
-						[state]: {
+						[`${unit}Style`]: {
 							transition: 'none',
 							transform: 'rotate(0deg)'
 						}
 					})
-				}, 900)
+				}, 500)
 			)
 
 		} else {
 
+			activated[time] = true
+
 			this.setState({
-				[state]: {
+				[`${unit}Style`]: {
 					transition: this.transition,
 					transform: 'rotate(' + String(time * (- 3)) + 'deg)'
-				}
+				},
+				[`${unit}Activated`]:
+					activated
+
 			})
 		}
 
@@ -87,45 +130,14 @@ export default class Calendar extends Component {
 
 	componentDidMount() {
 
-		const spanProps = []
-		const hourProps = []
-
-		for (let i = 0; i < 120; i++) {
-			const prop = {
-				value: (i % 60),
-				rotation: i* 3
-			}
-			spanProps.push(prop)
-		}
-
-		for (let i = 0; i < 120; i++) {
-			const prop = {
-				value: (i % 24),
-				rotation: i * 3
-			}
-			hourProps.push(prop)
-		}
-
-		this.setState({
-			secondsSpanList: spanProps.map((prop) =>
-				<RingSpan key={prop.rotation} text={pad(prop.value, 2)} rotation={prop.rotation} />
-			),
-			minutesSpanList: spanProps.map((prop) =>
-				<RingSpan key={prop.rotation} text={pad(prop.value, 2)} rotation={prop.rotation} />
-			),
-			hoursSpanList: hourProps.map((prop) =>
-				<RingSpan key={prop.rotation} text={pad(prop.value, 2)} rotation={prop.rotation} />
-			)
-		})
-
 		this.tick(() => {
 
 			this.date = new Date();
-			// this.date = new Date(this.date.getTime() + 672 * 60000 - 20 * 1000)
+			this.date = new Date(this.date.getTime() + 25 * 60000 - 55 * 1000)
 
-			this.rotate('secStyle', this.date.getSeconds(), 180)
-			this.rotate('minStyle', this.date.getMinutes(), 180)
-			this.rotate('hourStyle', this.date.getHours(), 72)
+			this.rotate('sec', this.date.getSeconds(), 180)
+			this.rotate('min', this.date.getMinutes(), 180)
+			this.rotate('hour', this.date.getHours(), 72)
 
 		})
 
@@ -133,36 +145,58 @@ export default class Calendar extends Component {
 
 	componentWillUnmount() {
 		clearTimeout(this.timeoutID)
-		// console.log('timeout cleared')
 	}
 
+	getSecSpanList = memoize((activated) =>
+		this.secProps.map((prop, i) =>
+			<RingSpan
+				key={prop.rotation}
+				text={pad(prop.value, 2)}
+				rotation={prop.rotation}
+				activated={activated[i]}
+			/>
+		)
+	)
+
+	getMinSpanList = memoize((activated) =>
+		this.minProps.map((prop, i) =>
+			<RingSpan
+				key={prop.rotation}
+				text={pad(prop.value, 2)}
+				rotation={prop.rotation}
+				activated={activated[i]}
+			/>
+		)
+	)
+
+	getHourSpanList = memoize((activated) =>
+		this.hourProps.map((prop, i) =>
+			<RingSpan
+				key={prop.rotation}
+				text={pad(prop.value, 2)}
+				rotation={prop.rotation}
+				activated={activated[i]}
+			/>
+		)
+	)
+
 	render() {
+
+		const secSpanList = this.getSecSpanList(this.state.secActivated)
+		const minSpanList = this.getMinSpanList(this.state.minActivated)
+		const hourSpanList = this.getHourSpanList(this.state.hourActivated)
+
 		return (
 			<div className="ring_timer">
-				<div className='dial dial_sec'>
-					<div
-						className='ring_seconds'
-						style={this.state.secStyle}
-					>
-						{this.state.secondsSpanList}
-					</div>
-				</div>
-				<div className="dial dial_min">
-					<div
-						className="ring_minutes"
-						style={this.state.minStyle}
-					>
-						{this.state.minutesSpanList}
-					</div>
-				</div>
-				<div className="dial dial_hour">
-					<div
-						className="ring_hours"
-						style={this.state.hourStyle}
-					>
-						{this.state.hoursSpanList}
-					</div>
-				</div>
+				<Dial className='dial_sec' style={this.state.secStyle}>
+					{secSpanList}
+				</Dial>
+				<Dial className='dial_min' style={this.state.minStyle}>
+					{minSpanList}
+				</Dial>
+				<Dial className='dial_hour' style={this.state.hourStyle}>
+					{hourSpanList}
+				</Dial>
 			</div>
 		)
 	}
