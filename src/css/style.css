@@ -4,17 +4,17 @@ body {
   /* Hide scrollbars */
   background: rgb(49, 49, 49);
   font-family: "Roboto Mono", monospace;
-  color: rgb(233, 234, 240);
+  color: rgb(181, 182, 187);
 }
 
 .ring_timer {
   position: absolute;
   left: 0;
   top: 50%;
-  transform: translate(-45%, -50%);
-  width: 2000px;
-  height: 2000px;
-  font-size: 28px;
+  transform: translate(-75%, -50%);
+  width: 2400px;
+  height: 2400px;
+  font-size: 1.5em;
 }
 
 .ring_timer::before {
@@ -28,9 +28,12 @@ body {
   content: "";
 }
 
-.dial_sec .rotator,
+/* .dial_sec .rotator,
 .dial_min .rotator,
 .dial_hour .rotator,
+.dial_day_of_week .rotator,
+.dial_day_of_month .rotator, */
+.rotator,
 .dial {
   position: absolute;
   top: 0;
@@ -49,19 +52,37 @@ body {
 }
 
 .dial_min {
-  top: 90px;
-  left: 90px;
-  bottom: 90px;
-  right: 90px;
+  top: 60px;
+  left: 60px;
+  bottom: 60px;
+  right: 60px;
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
 }
 
 .dial_hour {
-  top: 180px;
-  left: 180px;
-  bottom: 180px;
-  right: 180px;
+  top: 120px;
+  left: 120px;
+  bottom: 120px;
+  right: 120px;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
+.dial_day_of_week {
+  top: 220px;
+  left: 220px;
+  bottom: 220px;
+  right: 220px;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
+.dial_day_of_month {
+  top: 290px;
+  left: 290px;
+  bottom: 290px;
+  right: 290px;
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
 }
@@ -72,22 +93,18 @@ body {
   top: 50%;
   width: 100%;
   text-align: right;
+  transition: inherit;
 }
 
 .ring_text {
   position: relative;
   width: 100%;
   padding: 0 10px;
+  transition: font-size 0.2s ease;
+  transition: inherit;
 }
 
-.dial_sec .activated {
-  color: rgb(255, 116, 52);
-}
-
-.dial_min .activated {
-  color: rgb(81, 221, 0);
-}
-
-.dial_hour .activated {
-  color: rgb(52, 147, 255);
+.activated {
+  color: rgb(250, 250, 255);
+  font-size: 1.15em;
 }/*# sourceMappingURL=style.css.map */

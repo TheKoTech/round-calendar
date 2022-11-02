@@ -10,13 +10,16 @@ function pad(num, size) {
 }
 
 
+const getMonthLen = (year, month) => new Date(year, month + 1, 0).getDate()
+
+
 export default class Calendar extends Component {
 
 	constructor(props) {
 		super(props)
+		// can be used to set initial rotation
 		this.date = new Date()
-		this.degub_time = new Date()
-		this.transition = 'transform 0.25s ease'
+		this.transition = 'all 0.3s ease'
 		this.state = {
 			secStyle: {
 				transition: this.transition,
@@ -30,23 +33,44 @@ export default class Calendar extends Component {
 				transition: this.transition,
 				transform: 'rotate(0deg)'
 			},
-			secSpanList: [],
-			minSpanList: [],
-			hourSpanList: [],
+			dayOfWeekStyle: {
+				transition: this.transition,
+				transform: 'rotate(-3deg)' // because i don't fucking know
+			},
+			dayOfMonthStyle: {
+				transition: this.transition,
+				transform: 'rotate(0deg)'
+			},
+			monthStyle: {
+				transition: this.transition,
+				transform: 'rotate(0deg)'
+			},
+			yearStyle: {
+				transition: this.transition,
+				transform: 'rotate(0deg)'
+			},
+
 			secActivated: new Array(120).fill(false),
 			minActivated: new Array(120).fill(false),
-			hourActivated: new Array(120).fill(false)
+			hourActivated: new Array(120).fill(false),
+			dayOfWeekActivated: new Array(120).fill(false),
+			dayOfMonthActivated: new Array(120).fill(false),
+			monthActivated: new Array(120).fill(false),
+			yearActivated: new Array(120).fill(false)
 		}
 
 		this.secProps = []
 		this.minProps = []
 		this.hourProps = []
+		this.dayOfWeekProps = []
+		this.dayOfMonthProps = []
+		this.monthProps = []
+		this.yearProps = []
 
 		for (let i = 0; i < 120; i++) {
 			const prop = {
 				value: (i % 60),
-				rotation: i * 3,
-				activated: false
+				rotation: i * 3
 			}
 			this.secProps.push(prop)
 			this.minProps.push(prop)
@@ -55,13 +79,86 @@ export default class Calendar extends Component {
 		for (let i = 0; i < 120; i++) {
 			const prop = {
 				value: (i % 24),
-				rotation: i * 3,
-				activated: false
+				rotation: i * 3
 			}
 			this.hourProps.push(prop)
 		}
 
+		const dayStrings = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+		for (let i = 0; i < 120; i++) {
+			const prop = {
+				value: dayStrings[
+					i < 30
+						? (i + 6) % 7
+						: (i + 5) % 7
+				],
+				rotation: i * 3,
+			}
+			this.dayOfWeekProps.push(prop)
+		}
+
+		this.fillDaysOfMonth(this.date)
+
+		const monthStrings = [
+			'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+		]
+
+		for (let i = 0; i < 120; i++) {
+			const prop = {
+				value: monthStrings[i % 12],
+				rotation: i * 3
+			}
+			this.monthProps.push(prop)
+		}
+
+		for (let i = 0; i < 60; i++) {
+			const prop = {
+				value: this.date.getFullYear() + i,
+				rotation: i * 3
+			}
+			this.yearProps.push(prop)
+		}
+		for (let i = 60; i < 120; i++) {
+			const prop = {
+				value: this.date.getFullYear - 120 + i,
+				rotation: i * 3
+			}
+			this.yearProps.push(prop)
+		}
+
 	}
+
+
+	/** The logic is simple: fill 3 months - current, next and previous. 
+	 * The other ones will not be visible */
+	fillDaysOfMonth = memoize((date) => {
+
+		const lastMonthLength = getMonthLen(date.getFullYear(), date.getMonth() - 1)
+		const curMonthLength = getMonthLen(date.getFullYear(), date.getMonth())
+		const nextMonthLength = getMonthLen(date.getFullYear(), date.getMonth() + 1)
+
+		for (let i = 120 - lastMonthLength; i < 120; i++) {
+			this.dayOfMonthProps[i] = {
+				value: i - 119 + lastMonthLength,
+				rotation: i * 3
+			}
+		}
+
+		for (let i = 0; i < curMonthLength; i++) {
+			this.dayOfMonthProps[i] = {
+				value: i + 1,
+				rotation: i * 3
+			}
+		}
+
+		for (let i = curMonthLength; i < curMonthLength + nextMonthLength; i++) {
+			this.dayOfMonthProps[i] = {
+				value: i - curMonthLength + 1,
+				rotation: i * 3
+			}
+		}
+
+	})
 
 	/** вызывает callback каждый раз, когда происходит новая секунда. 
 	 * Хранит ID в this.timeoutID */
@@ -77,20 +174,13 @@ export default class Calendar extends Component {
 		)
 	}
 
-	// todo: optimize by assigning all states at once, when changing more than one
-	/** Sets the state[Unit] to time * (- angleMultiplyer). 
-	 * @param unit {string}
-	 * @param time {number}
-	 * @param transitionAngle {number | string}
-	*/
 	rotate(unit, time, transitionAngle) {
 
 		const activated = new Array(120).fill(false)
 
 		if (time === 0 && this.state[`${unit}Style`].transform !== 'rotate(0deg)') {
 
-			activated[transitionAngle / 3] = true
-			activated[0] = true
+			activated[Math.floor(transitionAngle / 3)] = true
 
 			this.setState({
 				[`${unit}Style`]: {
@@ -101,12 +191,19 @@ export default class Calendar extends Component {
 
 			},
 				() => setTimeout(() => {
-					console.log('clearing transition')
+					const activated = new Array(120).fill(false)
+					activated[0] = true
+
+					if (unit === 'dayOfMonth') {
+						this.fillDaysOfMonth(this.date)
+					}
+
 					this.setState({
 						[`${unit}Style`]: {
 							transition: 'none',
 							transform: 'rotate(0deg)'
-						}
+						},
+						[`${unit}Activated`]: activated
 					})
 				}, 500)
 			)
@@ -114,6 +211,10 @@ export default class Calendar extends Component {
 		} else {
 
 			activated[time] = true
+
+			if (unit === 'dayOfMonth') {
+				this.fillDaysOfMonth(this.date)
+			}
 
 			this.setState({
 				[`${unit}Style`]: {
@@ -133,11 +234,18 @@ export default class Calendar extends Component {
 		this.tick(() => {
 
 			this.date = new Date();
-			this.date = new Date(this.date.getTime() + 25 * 60000 - 55 * 1000)
+
+			const addTime = (s = 0, m = 0, h = 0, D = 0, M = 0, Y = 0) => this.date = new Date(
+				this.date.getTime() + s * 1000 + m * 60000 + h * 3600000 + D * 86400000 + M * 2592000000 + Y * 31536000000
+			)
+
+			addTime(25, 3, 7, -2, 0)
 
 			this.rotate('sec', this.date.getSeconds(), 180)
 			this.rotate('min', this.date.getMinutes(), 180)
 			this.rotate('hour', this.date.getHours(), 72)
+			this.rotate('dayOfWeek', this.date.getDay(), 21)
+			this.rotate('dayOfMonth', this.date.getDate() - 1, (getMonthLen(this.date.getFullYear(), this.date.getMonth() - 1)) * 3)
 
 		})
 
@@ -180,11 +288,60 @@ export default class Calendar extends Component {
 		)
 	)
 
+	getDayOfWeekSpanList = memoize((activated) =>
+		this.dayOfWeekProps.map((prop, i) =>
+			<RingSpan
+				key={prop.rotation}
+				text={prop.value}
+				rotation={prop.rotation}
+				activated={activated[i]}
+			/>
+		)
+	)
+
+	getDayOfMonthSpanList = memoize((activated) => {
+		return this.dayOfMonthProps.map((prop, i) =>
+			<RingSpan
+				key={prop.rotation}
+				text={pad(prop.value, 2)}
+				rotation={prop.rotation}
+				activated={activated[i]}
+			/>
+		)
+	})
+
+	getMonthSpanList = memoize((activated) =>
+		this.monthProps.map((prop, i) =>
+			<RingSpan
+				key={prop.rotation}
+				text={prop.value}
+				rotation={prop.rotation}
+				activated={activated[i]}
+			/>
+		)
+	)
+
+	getYearSpanList = memoize((activated) =>
+	this.yearProps.map((prop, i) =>
+		<RingSpan
+			key={prop.rotation}
+			text={prop.value}
+			rotation={prop.rotation}
+			activated={activated[i]}
+		/>
+	)
+)
+
 	render() {
 
 		const secSpanList = this.getSecSpanList(this.state.secActivated)
 		const minSpanList = this.getMinSpanList(this.state.minActivated)
 		const hourSpanList = this.getHourSpanList(this.state.hourActivated)
+		const dayOfWeekSpanList = this.getDayOfWeekSpanList(this.state.dayOfWeekActivated)
+		const dayOfMonthSpanList = this.getDayOfMonthSpanList(this.state.dayOfMonthActivated)
+		const monthSpanList = this.getMonthSpanList(this.state.monthActivated)
+		// const yearSpanList = this.getYearSpanList(this.state.yearActivated)
+
 
 		return (
 			<div className="ring_timer">
@@ -197,6 +354,18 @@ export default class Calendar extends Component {
 				<Dial className='dial_hour' style={this.state.hourStyle}>
 					{hourSpanList}
 				</Dial>
+				<Dial className='dial_day_of_week' style={this.state.dayOfWeekStyle}>
+					{dayOfWeekSpanList}
+				</Dial>
+				<Dial className='dial_day_of_month' style={this.state.dayOfMonthStyle}>
+					{dayOfMonthSpanList}
+				</Dial>
+				<Dial className='dial_month' style={this.state.monthStyle}>
+					{monthSpanList}
+				</Dial>
+				{/* <Dial className='dial_year' style={this.state.yearStyle}>
+					{yearSpanList}
+				</Dial> */}
 			</div>
 		)
 	}
