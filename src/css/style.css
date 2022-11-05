@@ -1,110 +1,152 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@100;200&display=swap");
+
+/* Dials */
+
+:root {
+	--global-diam: 175vw;
+	--font-size: 1.6vw;
+	--clock-diam: 0vw;
+	--sec-diam: 0vw;
+	--min-diam: 4vw;
+	--hour-diam: 8vw;
+	--day-diam: 12vw;
+	--date-diam: 14vw;
+	--month-diam: 18vw;
+	--year-diam: 22vw;
+}
+
 body {
-  overflow: hidden;
-  /* Hide scrollbars */
-  background: rgb(49, 49, 49);
-  font-family: "Roboto Mono", monospace;
-  color: rgb(181, 182, 187);
+	overflow: hidden;
+	/* Hide scrollbars */
+	background: rgb(49, 49, 49);
+	font-family: "Roboto Mono", monospace;
+	color: rgb(181, 182, 187);
 }
 
 .ring_timer {
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translate(-75%, -50%);
-  width: 2400px;
-  height: 2400px;
-  font-size: 1.5em;
+	position: absolute;
+	left: 0;
+	top: 50%;
+	transform: translate(-75%, -50%);
+	width: var(--global-diam);
+	height: var(--global-diam);
+	font-size: var(--font-size);
 }
 
 .ring_timer::before {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  border: rgba(255, 255, 255, 0.1) 60px solid;
-  border-radius: 50%;
-  content: "";
+	position: absolute;
+	top: var(--clock-diam);
+	bottom: var(--clock-diam);
+	left: var(--clock-diam);
+	right: var(--clock-diam);
+	border: rgba(255, 255, 255, 0.08) 11.5vw solid;
+	border-radius: 50%;
+	content: "";
 }
 
-/* .dial_sec .rotator,
-.dial_min .rotator,
-.dial_hour .rotator,
-.dial_day_of_week .rotator,
-.dial_day_of_month .rotator, */
 .rotator,
 .dial {
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
 }
 
 .dial_sec {
-  top: 0px;
-  left: 0px;
-  bottom: 0px;
-  right: 0px;
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
+	top: var(--sec-diam);
+	left: var(--sec-diam);
+	bottom: var(--sec-diam);
+	right: var(--sec-diam);
+	-webkit-transform: translateZ(0);
+	transform: translateZ(0);
 }
 
 .dial_min {
-  top: 60px;
-  left: 60px;
-  bottom: 60px;
-  right: 60px;
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
+	top: var(--min-diam);
+	left: var(--min-diam);
+	bottom: var(--min-diam);
+	right: var(--min-diam);
+	-webkit-transform: translateZ(0);
+	transform: translateZ(0);
 }
 
 .dial_hour {
-  top: 120px;
-  left: 120px;
-  bottom: 120px;
-  right: 120px;
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
+	top: var(--hour-diam);
+	left: var(--hour-diam);
+	bottom: var(--hour-diam);
+	right: var(--hour-diam);
+	-webkit-transform: translateZ(0);
+	transform: translateZ(0);
 }
 
 .dial_day_of_week {
-  top: 220px;
-  left: 220px;
-  bottom: 220px;
-  right: 220px;
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
+	top: var(--day-diam);
+	left: var(--day-diam);
+	bottom: var(--day-diam);
+	right: var(--day-diam);
+	-webkit-transform: translateZ(0);
+	transform: translateZ(0);
 }
 
 .dial_day_of_month {
-  top: 290px;
-  left: 290px;
-  bottom: 290px;
-  right: 290px;
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
+	top: var(--date-diam);
+	left: var(--date-diam);
+	bottom: var(--date-diam);
+	right: var(--date-diam);
+	-webkit-transform: translateZ(0);
+	transform: translateZ(0);
+}
+
+.dial_month {
+	top: var(--month-diam);
+	left: var(--month-diam);
+	bottom: var(--month-diam);
+	right: var(--month-diam);
+	-webkit-transform: translateZ(0);
+	transform: translateZ(0);
+}
+
+.dial_year {
+	top: var(--year-diam);
+	left: var(--year-diam);
+	bottom: var(--year-diam);
+	right: var(--year-diam);
+	-webkit-transform: translateZ(0);
+	transform: translateZ(0);
 }
 
 .ring_span {
-  position: absolute;
-  display: block;
-  top: 50%;
-  width: 100%;
-  text-align: right;
-  transition: inherit;
+	position: absolute;
+	display: block;
+	top: 50%;
+	width: 100%;
+	text-align: right;
+	transition: inherit;
 }
 
 .ring_text {
-  position: relative;
-  width: 100%;
-  padding: 0 10px;
-  transition: font-size 0.2s ease;
-  transition: inherit;
+	position: relative;
+	width: 100%;
+	padding: 0 10px;
+	transition: font-size 0.2s ease;
+	transition: inherit;
 }
 
 .activated {
-  color: rgb(250, 250, 255);
-  font-size: 1.15em;
-}/*# sourceMappingURL=style.css.map */
+	color: rgb(250, 250, 255);
+	font-size: 1.15em;
+}
+
+/*# sourceMappingURL=style.css.map */
+
+/* Sectors */
+
+.sector {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	
+}

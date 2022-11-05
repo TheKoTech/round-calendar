@@ -97,7 +97,7 @@ export default class Calendar extends Component {
 			this.dayOfWeekProps.push(prop)
 		}
 
-		this.fillDaysOfMonth(this.date)
+		this.fillDaysOfMonthProps(this.date)
 
 		const monthStrings = [
 			'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
@@ -111,27 +111,18 @@ export default class Calendar extends Component {
 			this.monthProps.push(prop)
 		}
 
-		for (let i = 0; i < 60; i++) {
-			const prop = {
-				value: this.date.getFullYear() + i,
+		for (let i = 0; i < 120; i++) {
+			this.yearProps[i] = {
+				value: 1960 + i,
 				rotation: i * 3
 			}
-			this.yearProps.push(prop)
 		}
-		for (let i = 60; i < 120; i++) {
-			const prop = {
-				value: this.date.getFullYear - 120 + i,
-				rotation: i * 3
-			}
-			this.yearProps.push(prop)
-		}
-
 	}
 
 
 	/** The logic is simple: fill 3 months - current, next and previous. 
 	 * The other ones will not be visible */
-	fillDaysOfMonth = memoize((date) => {
+	fillDaysOfMonthProps = memoize((date) => {
 
 		const lastMonthLength = getMonthLen(date.getFullYear(), date.getMonth() - 1)
 		const curMonthLength = getMonthLen(date.getFullYear(), date.getMonth())
@@ -159,6 +150,7 @@ export default class Calendar extends Component {
 		}
 
 	})
+
 
 	/** вызывает callback каждый раз, когда происходит новая секунда. 
 	 * Хранит ID в this.timeoutID */
@@ -195,7 +187,7 @@ export default class Calendar extends Component {
 					activated[0] = true
 
 					if (unit === 'dayOfMonth') {
-						this.fillDaysOfMonth(this.date)
+						this.fillDaysOfMonthProps(this.date)
 					}
 
 					this.setState({
@@ -213,7 +205,7 @@ export default class Calendar extends Component {
 			activated[time] = true
 
 			if (unit === 'dayOfMonth') {
-				this.fillDaysOfMonth(this.date)
+				this.fillDaysOfMonthProps(this.date)
 			}
 
 			this.setState({
@@ -239,13 +231,15 @@ export default class Calendar extends Component {
 				this.date.getTime() + s * 1000 + m * 60000 + h * 3600000 + D * 86400000 + M * 2592000000 + Y * 31536000000
 			)
 
-			addTime(25, 3, 7, -2, 0)
+			addTime(45, 20, 9, 26, 1, 0)
 
 			this.rotate('sec', this.date.getSeconds(), 180)
 			this.rotate('min', this.date.getMinutes(), 180)
 			this.rotate('hour', this.date.getHours(), 72)
 			this.rotate('dayOfWeek', this.date.getDay(), 21)
 			this.rotate('dayOfMonth', this.date.getDate() - 1, (getMonthLen(this.date.getFullYear(), this.date.getMonth() - 1)) * 3)
+			this.rotate('month', this.date.getMonth(), 36)
+			this.rotate('year', (this.date.getFullYear() - 1960), 360)
 
 		})
 
@@ -299,8 +293,8 @@ export default class Calendar extends Component {
 		)
 	)
 
-	getDayOfMonthSpanList = memoize((activated) => {
-		return this.dayOfMonthProps.map((prop, i) =>
+	getDayOfMonthSpanList = memoize((activated) =>
+		this.dayOfMonthProps.map((prop, i) =>
 			<RingSpan
 				key={prop.rotation}
 				text={pad(prop.value, 2)}
@@ -308,7 +302,7 @@ export default class Calendar extends Component {
 				activated={activated[i]}
 			/>
 		)
-	})
+	)
 
 	getMonthSpanList = memoize((activated) =>
 		this.monthProps.map((prop, i) =>
@@ -322,29 +316,30 @@ export default class Calendar extends Component {
 	)
 
 	getYearSpanList = memoize((activated) =>
-	this.yearProps.map((prop, i) =>
-		<RingSpan
-			key={prop.rotation}
-			text={prop.value}
-			rotation={prop.rotation}
-			activated={activated[i]}
-		/>
+		this.yearProps.map((prop, i) =>
+			<RingSpan
+				key={prop.rotation}
+				text={prop.value}
+				rotation={prop.rotation}
+				activated={activated[i]}
+			/>
+		)
 	)
-)
 
 	render() {
 
 		const secSpanList = this.getSecSpanList(this.state.secActivated)
 		const minSpanList = this.getMinSpanList(this.state.minActivated)
 		const hourSpanList = this.getHourSpanList(this.state.hourActivated)
-		const dayOfWeekSpanList = this.getDayOfWeekSpanList(this.state.dayOfWeekActivated)
+		// const dayOfWeekSpanList = this.getDayOfWeekSpanList(this.state.dayOfWeekActivated)
 		const dayOfMonthSpanList = this.getDayOfMonthSpanList(this.state.dayOfMonthActivated)
 		const monthSpanList = this.getMonthSpanList(this.state.monthActivated)
-		// const yearSpanList = this.getYearSpanList(this.state.yearActivated)
+		const yearSpanList = this.getYearSpanList(this.state.yearActivated)
 
 
 		return (
 			<div className="ring_timer">
+				<div className="sector"></div>
 				<Dial className='dial_sec' style={this.state.secStyle}>
 					{secSpanList}
 				</Dial>
@@ -354,18 +349,18 @@ export default class Calendar extends Component {
 				<Dial className='dial_hour' style={this.state.hourStyle}>
 					{hourSpanList}
 				</Dial>
-				<Dial className='dial_day_of_week' style={this.state.dayOfWeekStyle}>
+				{/* <Dial className='dial_day_of_week' style={this.state.dayOfWeekStyle}>
 					{dayOfWeekSpanList}
-				</Dial>
+				</Dial> */}
 				<Dial className='dial_day_of_month' style={this.state.dayOfMonthStyle}>
 					{dayOfMonthSpanList}
 				</Dial>
 				<Dial className='dial_month' style={this.state.monthStyle}>
 					{monthSpanList}
 				</Dial>
-				{/* <Dial className='dial_year' style={this.state.yearStyle}>
+				<Dial className='dial_year' style={this.state.yearStyle}>
 					{yearSpanList}
-				</Dial> */}
+				</Dial>
 			</div>
 		)
 	}
