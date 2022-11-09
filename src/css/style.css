@@ -2,32 +2,46 @@
 
 /* Dials */
 
-:root {
-	--global-diam: 175vw;
-	--font-size: 1.6vw;
-	--clock-diam: 0vw;
-	--sec-diam: 0vw;
-	--min-diam: 4vw;
-	--hour-diam: 8vw;
+/* :root {
+	--global-diam: 80vw;
+	--font-size: 1.62vw;
+	--clock-diam: 0;
+	--sec-diam: 0;
+	--min-diam: 3.6vw;
+	--hour-diam: 7.2vw;
 	--day-diam: 12vw;
 	--date-diam: 14vw;
-	--month-diam: 18vw;
+	--month-diam: 17.5vw;
+	--year-diam: 22vw;
+} */
+:root {
+	--global-diam: 197.5vw;
+	--font-size: 1.62vw;
+	--clock-diam: 0;
+	--sec-diam: 0;
+	--min-diam: 3.6vw;
+	--hour-diam: 7.2vw;
+	--day-diam: 12vw;
+	--date-diam: 14vw;
+	--month-diam: 17.5vw;
 	--year-diam: 22vw;
 }
 
+:root { --global-diam: 2700px; --font-size: 1.4em; --clock-diam: 0; --sec-diam: 0; --min-diam: 50px; --hour-diam: 100px; --day-diam: 140px; --date-diam: 190px; --month-diam: 235px; --year-diam: 295px; }
+/* :root { --global-diam: 1092.8px; --font-size: .4em; --clock-diam: 0; --sec-diam: 0; --min-diam: 50px; --hour-diam: 100px; --day-diam: 140px; --date-diam: 190px; --month-diam: 235px; --year-diam: 295px; } */
+
 body {
 	overflow: hidden;
-	/* Hide scrollbars */
 	background: rgb(49, 49, 49);
 	font-family: "Roboto Mono", monospace;
-	color: rgb(181, 182, 187);
+	color: rgb(181, 182, 187, 0.1);
 }
 
 .ring_timer {
 	position: absolute;
 	left: 0;
 	top: 50%;
-	transform: translate(-75%, -50%);
+	transform: translate(-50%, -50%);
 	width: var(--global-diam);
 	height: var(--global-diam);
 	font-size: var(--font-size);
@@ -39,7 +53,7 @@ body {
 	bottom: var(--clock-diam);
 	left: var(--clock-diam);
 	right: var(--clock-diam);
-	border: rgba(255, 255, 255, 0.08) 11.5vw solid;
+	border: rgba(255, 255, 255, 0.15) 5px solid;
 	border-radius: 50%;
 	content: "";
 }
@@ -60,6 +74,18 @@ body {
 	right: var(--sec-diam);
 	-webkit-transform: translateZ(0);
 	transform: translateZ(0);
+}
+
+.ring_span::before {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 5px;
+	height: 5px;
+	border-radius: 100%;
+	transform: translate(-50%, -50%);
+	content: '';
+	background: rgb(var(--debug-color));
 }
 
 .dial_min {
@@ -123,6 +149,18 @@ body {
 	width: 100%;
 	text-align: right;
 	transition: inherit;
+	outline-offset: -0.29em;
+}
+
+.ring_span::after {
+	position: absolute;
+	right: 11px;
+	top: 6px;
+	bottom:5px;
+	width: 10%;
+	content: '';
+	border: 1px solid rgb(var(--debug-color));
+	border-left: none;
 }
 
 .ring_text {
@@ -131,14 +169,14 @@ body {
 	padding: 0 10px;
 	transition: font-size 0.2s ease;
 	transition: inherit;
+	outline-offset: -0.29em;
+
 }
 
 .activated {
 	color: rgb(250, 250, 255);
-	font-size: 1.15em;
+	/* font-size: 1.15em; */
 }
-
-/*# sourceMappingURL=style.css.map */
 
 /* Sectors */
 
@@ -148,5 +186,5 @@ body {
 	left: 0;
 	right: 0;
 	bottom: 0;
-	
+
 }
