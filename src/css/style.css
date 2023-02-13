@@ -2,60 +2,42 @@
 
 /* Dials */
 
-/* :root {
-	--global-diam: 80vw;
-	--font-size: 1.62vw;
-	--clock-diam: 0;
-	--sec-diam: 0;
-	--min-diam: 3.6vw;
-	--hour-diam: 7.2vw;
-	--day-diam: 12vw;
-	--date-diam: 14vw;
-	--month-diam: 17.5vw;
-	--year-diam: 22vw;
-} */
-:root {
-	--global-diam: 197.5vw;
-	--font-size: 1.62vw;
-	--clock-diam: 0;
-	--sec-diam: 0;
-	--min-diam: 3.6vw;
-	--hour-diam: 7.2vw;
-	--day-diam: 12vw;
-	--date-diam: 14vw;
-	--month-diam: 17.5vw;
-	--year-diam: 22vw;
-}
-
-:root { --global-diam: 2700px; --font-size: 1.4em; --clock-diam: 0; --sec-diam: 0; --min-diam: 50px; --hour-diam: 100px; --day-diam: 140px; --date-diam: 190px; --month-diam: 235px; --year-diam: 295px; }
-/* :root { --global-diam: 1092.8px; --font-size: .4em; --clock-diam: 0; --sec-diam: 0; --min-diam: 50px; --hour-diam: 100px; --day-diam: 140px; --date-diam: 190px; --month-diam: 235px; --year-diam: 295px; } */
-
 body {
 	overflow: hidden;
 	background: rgb(49, 49, 49);
 	font-family: "Roboto Mono", monospace;
-	color: rgb(181, 182, 187, 0.1);
+	/* font-family: monospace; */
+	color: rgb(181, 182, 187, 0.6);
 }
 
-.ring_timer {
+.calendar {
 	position: absolute;
 	left: 0;
 	top: 50%;
-	transform: translate(-50%, -50%);
+	transform: translate(-75%, -50%);
 	width: var(--global-diam);
 	height: var(--global-diam);
 	font-size: var(--font-size);
 }
 
-.ring_timer::before {
+.ring_timer {
 	position: absolute;
 	top: var(--clock-diam);
-	bottom: var(--clock-diam);
 	left: var(--clock-diam);
+	bottom: var(--clock-diam);
 	right: var(--clock-diam);
-	border: rgba(255, 255, 255, 0.15) 5px solid;
+	font-size: var(--font-size);
+}
+
+.calendar::before {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	border: rgba(255, 255, 255, 0.15) calc(var(--border-diam)) solid;
 	border-radius: 50%;
-	content: "";
+	content: '';
 }
 
 .rotator,
@@ -76,17 +58,17 @@ body {
 	transform: translateZ(0);
 }
 
-.ring_span::before {
+/* .ring_span::before {
 	position: absolute;
 	top: 50%;
 	left: 50%;
-	width: 5px;
-	height: 5px;
+	width: 1px;
+	height: 1px;
 	border-radius: 100%;
 	transform: translate(-50%, -50%);
 	content: '';
 	background: rgb(var(--debug-color));
-}
+} */
 
 .dial_min {
 	top: var(--min-diam);
@@ -151,17 +133,17 @@ body {
 	transition: inherit;
 	outline-offset: -0.29em;
 }
-
+/* 
 .ring_span::after {
 	position: absolute;
 	right: 11px;
 	top: 6px;
 	bottom:5px;
-	width: 10%;
+	width: 13%;
 	content: '';
-	border: 1px solid rgb(var(--debug-color));
+	border: 1px solid rgba(var(--debug-color), 1);
 	border-left: none;
-}
+} */
 
 .ring_text {
 	position: relative;

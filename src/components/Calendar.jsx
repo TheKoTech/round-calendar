@@ -338,34 +338,36 @@ export default class Calendar extends Component {
 
 
 		return (
-			<div className="ring_timer">
-				<div className="sector"></div>
-				{/* <Dial className='dial_sec' style={this.state.secStyle}> */}
-				<Dial className='dial_sec' style={{...this.state.secStyle, '--debug-color': '255, 0, 0'}}>
-					{secSpanList}
-				</Dial>
-				{/* <Dial className='dial_min' style={this.state.minStyle}> */}
-				<Dial className='dial_min' style={{...this.state.minStyle, '--debug-color': '255, 255, 0'}}>
-					{minSpanList}
-				</Dial>
-				{/* <Dial className='dial_hour' style={this.state.hourStyle}> */}
-				<Dial className='dial_hour' style={{...this.state.hourStyle, '--debug-color': '0, 255, 0'}}>
-					{hourSpanList}
-				</Dial>
-				{/* <Dial className='dial_day_of_week' style={this.state.dayOfWeekStyle}>
+			<div className="calendar">
+				<div className="ring_timer">
+					<div className="sector"></div>
+					{/* <Dial className='dial_sec' style={this.state.secStyle}> */}
+					<Dial className='dial_sec' style={{ ...this.state.secStyle, '--debug-color': '255, 0, 0' }}>
+						{secSpanList}
+					</Dial>
+					{/* <Dial className='dial_min' style={this.state.minStyle}> */}
+					<Dial className='dial_min' style={{ ...this.state.minStyle, '--debug-color': '255, 255, 0' }}>
+						{minSpanList}
+					</Dial>
+					{/* <Dial className='dial_hour' style={this.state.hourStyle}> */}
+					<Dial className='dial_hour' style={{ ...this.state.hourStyle, '--debug-color': '0, 255, 0' }}>
+						{hourSpanList}
+					</Dial>
+					{/* <Dial className='dial_day_of_week' style={this.state.dayOfWeekStyle}>
 					{dayOfWeekSpanList}
 				</Dial> */}
-				<Dial className='dial_day_of_month' style={{...this.state.dayOfMonthStyle, '--debug-color': '0, 255, 255'}}>
-					{dayOfMonthSpanList}
-				</Dial>
-				{/* <Dial className='dial_month' style={this.state.monthStyle}> */}
-				<Dial className='dial_month' style={{...this.state.monthStyle, '--debug-color': '0, 0, 255'}}>
-					{monthSpanList}
-				</Dial>
-				{/* <Dial className='dial_year' style={this.state.yearStyle}> */}
-				<Dial className='dial_year' style={{...this.state.yearStyle, '--debug-color': '255, 0, 255'}}>
-					{yearSpanList}
-				</Dial>
+					<Dial className='dial_day_of_month' style={{ ...this.state.dayOfMonthStyle, '--debug-color': '0, 255, 255' }}>
+						{dayOfMonthSpanList}
+					</Dial>
+					{/* <Dial className='dial_month' style={this.state.monthStyle}> */}
+					<Dial className='dial_month' style={{ ...this.state.monthStyle, '--debug-color': '0, 0, 255' }}>
+						{monthSpanList}
+					</Dial>
+					{/* <Dial className='dial_year' style={this.state.yearStyle}> */}
+					<Dial className='dial_year' style={{ ...this.state.yearStyle, '--debug-color': '255, 0, 255' }}>
+						{yearSpanList}
+					</Dial>
+				</div>
 			</div>
 		)
 	}
