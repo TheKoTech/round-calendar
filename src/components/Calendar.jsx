@@ -49,6 +49,9 @@ export default class Calendar extends Component {
 				transition: this.transition,
 				transform: 'rotate(0deg)'
 			},
+			colonStyle: {
+				opacity: 1
+			},
 
 			secActivated: new Array(120).fill(false),
 			minActivated: new Array(120).fill(false),
@@ -170,16 +173,16 @@ export default class Calendar extends Component {
 
 		const activated = new Array(120).fill(false)
 
-		if (time === 0 && this.state[`${unit}Style`].transform !== 'rotate(0deg)') {
+		if (time === 0 && this.state[`${ unit }Style`].transform !== 'rotate(0deg)') {
 
 			activated[Math.floor(transitionAngle / 3)] = true
 
 			this.setState({
-				[`${unit}Style`]: {
+				[`${ unit }Style`]: {
 					transition: this.transition,
 					transform: 'rotate(-' + transitionAngle + 'deg)'
 				},
-				[`${unit}Activated`]: activated
+				[`${ unit }Activated`]: activated
 
 			},
 				() => setTimeout(() => {
@@ -191,11 +194,11 @@ export default class Calendar extends Component {
 					}
 
 					this.setState({
-						[`${unit}Style`]: {
+						[`${ unit }Style`]: {
 							transition: 'none',
 							transform: 'rotate(0deg)'
 						},
-						[`${unit}Activated`]: activated
+						[`${ unit }Activated`]: activated
 					})
 				}, 500)
 			)
@@ -209,11 +212,11 @@ export default class Calendar extends Component {
 			}
 
 			this.setState({
-				[`${unit}Style`]: {
+				[`${ unit }Style`]: {
 					transition: this.transition,
 					transform: 'rotate(' + String(time * (- 3)) + 'deg)'
 				},
-				[`${unit}Activated`]:
+				[`${ unit }Activated`]:
 					activated
 
 			})
@@ -225,7 +228,7 @@ export default class Calendar extends Component {
 
 		this.tick(() => {
 
-			this.date = new Date();
+			this.date = new Date()
 
 			const addTime = (s = 0, m = 0, h = 0, D = 0, M = 0, Y = 0) => this.date = new Date(
 				this.date.getTime() + s * 1000 + m * 60000 + h * 3600000 + D * 86400000 + M * 2592000000 + Y * 31536000000
@@ -252,10 +255,10 @@ export default class Calendar extends Component {
 	getSecSpanList = memoize((activated) =>
 		this.secProps.map((prop, i) =>
 			<RingSpan
-				key={prop.rotation}
-				text={pad(prop.value, 2)}
-				rotation={prop.rotation}
-				activated={activated[i]}
+				key={ prop.rotation }
+				text={ pad(prop.value, 2) }
+				rotation={ prop.rotation }
+				activated={ activated[i] }
 			/>
 		)
 	)
@@ -263,10 +266,10 @@ export default class Calendar extends Component {
 	getMinSpanList = memoize((activated) =>
 		this.minProps.map((prop, i) =>
 			<RingSpan
-				key={prop.rotation}
-				text={pad(prop.value, 2)}
-				rotation={prop.rotation}
-				activated={activated[i]}
+				key={ prop.rotation }
+				text={ pad(prop.value, 2) }
+				rotation={ prop.rotation }
+				activated={ activated[i] }
 			/>
 		)
 	)
@@ -274,32 +277,32 @@ export default class Calendar extends Component {
 	getHourSpanList = memoize((activated) =>
 		this.hourProps.map((prop, i) =>
 			<RingSpan
-				key={prop.rotation}
-				text={pad(prop.value, 2)}
-				rotation={prop.rotation}
-				activated={activated[i]}
+				key={ prop.rotation }
+				text={ pad(prop.value, 2) }
+				rotation={ prop.rotation }
+				activated={ activated[i] }
 			/>
 		)
 	)
 
-	getDayOfWeekSpanList = memoize((activated) =>
-		this.dayOfWeekProps.map((prop, i) =>
-			<RingSpan
-				key={prop.rotation}
-				text={prop.value}
-				rotation={prop.rotation}
-				activated={activated[i]}
-			/>
-		)
-	)
+	// getDayOfWeekSpanList = memoize((activated) =>
+	// 	this.dayOfWeekProps.map((prop, i) =>
+	// 		<RingSpan
+	// 			key={ prop.rotation }
+	// 			text={ prop.value }
+	// 			rotation={ prop.rotation }
+	// 			activated={ activated[i] }
+	// 		/>
+	// 	)
+	// )
 
 	getDayOfMonthSpanList = memoize((activated) =>
 		this.dayOfMonthProps.map((prop, i) =>
 			<RingSpan
-				key={prop.rotation}
-				text={pad(prop.value, 2)}
-				rotation={prop.rotation}
-				activated={activated[i]}
+				key={ prop.rotation }
+				text={ pad(prop.value, 2) }
+				rotation={ prop.rotation }
+				activated={ activated[i] }
 			/>
 		)
 	)
@@ -307,10 +310,10 @@ export default class Calendar extends Component {
 	getMonthSpanList = memoize((activated) =>
 		this.monthProps.map((prop, i) =>
 			<RingSpan
-				key={prop.rotation}
-				text={prop.value}
-				rotation={prop.rotation}
-				activated={activated[i]}
+				key={ prop.rotation }
+				text={ prop.value }
+				rotation={ prop.rotation }
+				activated={ activated[i] }
 			/>
 		)
 	)
@@ -318,10 +321,10 @@ export default class Calendar extends Component {
 	getYearSpanList = memoize((activated) =>
 		this.yearProps.map((prop, i) =>
 			<RingSpan
-				key={prop.rotation}
-				text={prop.value}
-				rotation={prop.rotation}
-				activated={activated[i]}
+				key={ prop.rotation }
+				text={ prop.value }
+				rotation={ prop.rotation }
+				activated={ activated[i] }
 			/>
 		)
 	)
@@ -339,33 +342,33 @@ export default class Calendar extends Component {
 
 		return (
 			<div className="calendar">
-				<div className="ring_timer">
+				<div className="ring_timer" style={ { ...this.state.colonStyle } }>
 					<div className="sector"></div>
-					{/* <Dial className='dial_sec' style={this.state.secStyle}> */}
-					<Dial className='dial_sec' style={{ ...this.state.secStyle, '--debug-color': '255, 0, 0' }}>
-						{secSpanList}
+					{/* <Dial className='dial_sec' style={this.state.secStyle}> */ }
+					<Dial className='dial_sec' style={ { ...this.state.secStyle, '--debug-color': '255, 0, 0' } }>
+						{ secSpanList }
 					</Dial>
-					{/* <Dial className='dial_min' style={this.state.minStyle}> */}
-					<Dial className='dial_min' style={{ ...this.state.minStyle, '--debug-color': '255, 255, 0' }}>
-						{minSpanList}
+					{/* <Dial className='dial_min' style={this.state.minStyle}> */ }
+					<Dial className='dial_min' style={ { ...this.state.minStyle, '--debug-color': '255, 255, 0' } }>
+						{ minSpanList }
 					</Dial>
-					{/* <Dial className='dial_hour' style={this.state.hourStyle}> */}
-					<Dial className='dial_hour' style={{ ...this.state.hourStyle, '--debug-color': '0, 255, 0' }}>
-						{hourSpanList}
+					{/* <Dial className='dial_hour' style={this.state.hourStyle}> */ }
+					<Dial className='dial_hour' style={ { ...this.state.hourStyle, '--debug-color': '0, 255, 0' } }>
+						{ hourSpanList }
 					</Dial>
-					{/* <Dial className='dial_day_of_week' style={this.state.dayOfWeekStyle}>
-					{dayOfWeekSpanList}
-				</Dial> */}
-					<Dial className='dial_day_of_month' style={{ ...this.state.dayOfMonthStyle, '--debug-color': '0, 255, 255' }}>
-						{dayOfMonthSpanList}
+					{/* <Dial className='dial_day_of_week' style={ this.state.dayOfWeekStyle }>
+						{ dayOfWeekSpanList }
+					</Dial> */}
+					<Dial className='dial_day_of_month' style={ { ...this.state.dayOfMonthStyle, '--debug-color': '0, 255, 255' } }>
+						{ dayOfMonthSpanList }
 					</Dial>
-					{/* <Dial className='dial_month' style={this.state.monthStyle}> */}
-					<Dial className='dial_month' style={{ ...this.state.monthStyle, '--debug-color': '0, 0, 255' }}>
-						{monthSpanList}
+					{/* <Dial className='dial_month' style={this.state.monthStyle}> */ }
+					<Dial className='dial_month' style={ { ...this.state.monthStyle, '--debug-color': '0, 0, 255' } }>
+						{ monthSpanList }
 					</Dial>
-					{/* <Dial className='dial_year' style={this.state.yearStyle}> */}
-					<Dial className='dial_year' style={{ ...this.state.yearStyle, '--debug-color': '255, 0, 255' }}>
-						{yearSpanList}
+					{/* <Dial className='dial_year' style={this.state.yearStyle}> */ }
+					<Dial className='dial_year' style={ { ...this.state.yearStyle, '--debug-color': '255, 0, 255' } }>
+						{ yearSpanList }
 					</Dial>
 				</div>
 			</div>
